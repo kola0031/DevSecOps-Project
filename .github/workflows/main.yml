@@ -44,7 +44,7 @@ jobs:
       - name: Run SonarQube Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: 'http://your-sonarqube-server-url'
+          SONAR_HOST_URL: 'http://3.15.29.26:9000/'
         run: |
           sonar-scanner \
             -Dsonar.projectKey=Netflix \
