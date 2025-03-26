@@ -1,0 +1,4 @@
+ - name: Debug Secrets
+    run: echo "Sonar Token Length: ${#SONAR_TOKEN}"
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
