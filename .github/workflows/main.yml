@@ -43,7 +43,7 @@ jobs:
 
       - name: Run SonarQube Analysis
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ ACTIONS_SECRETS.SONAR_TOKEN }}
           SONAR_HOST_URL: 'http://3.15.29.26:9000/'
         run: |
           sonar-scanner \
