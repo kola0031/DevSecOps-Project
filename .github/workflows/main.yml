@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     env:
       TMDB_V3_API_KEY: ${{ secrets.TMDB_V3_API_KEY }}
