@@ -51,7 +51,7 @@ jobs:
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
   security_scan:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: sonar
 
     steps:
