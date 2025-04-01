@@ -58,8 +58,8 @@ jobs:
       # Run OWASP Dependency-Check
       - name: Run OWASP Dependency Check
         run: |
-          mkdir -p reports  # Ensure reports directory exists
           docker run --rm \
+            --platform linux/arm64
             -e NVD_API_KEY=${{ secrets.NVD_API_KEY }} \
             --volume $(pwd):/src \
             --volume $(pwd)/reports:/report \
