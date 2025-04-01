@@ -11,7 +11,6 @@ on:
 jobs:
   build:
     runs-on: self-hosted
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -33,7 +32,6 @@ jobs:
   sonar:
     runs-on: self-hosted
     needs: build
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -53,23 +51,30 @@ jobs:
   security_scan:
     runs-on: self-hosted
     needs: sonar
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Run OWASP Dependency-Check
       - name: Run OWASP Dependency Check
         run: |
-          docker run --rm --volume $(pwd):/src --volume $(pwd)/reports:/report \
-          owasp/dependency-check --scan /src --format XML --out /report/dependency-check-report.xml
+          mkdir -p reports  # Ensure reports directory exists
+          docker run --rm \
+            -e NVD_API_KEY=${{ secrets.NVD_API_KEY }} \
+            --volume $(pwd):/src \
+            --volume $(pwd)/reports:/report \
+            owasp/dependency-check \
+            --scan /src \
+            --format XML \
+            --out /report/dependency-check-report.xml
 
+      # Run Trivy scan on the filesystem
       - name: Run Trivy File System Scan
-        run: trivy fs . > trivyfs.txt
+        run: trivy fs . > reports/trivyfs.txt
 
   docker_build:
     runs-on: self-hosted
     needs: security_scan
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -79,22 +84,20 @@ jobs:
 
       - name: Build & Push Docker Image
         run: |
-          docker build --build-arg TMDB_V3_API_KEY=364c3ef560e4e0d6bf37e640133ba64e -t netflix .
+          docker build --build-arg TMDB_V3_API_KEY=${{ secrets.TMDB_V3_API_KEY }} -t netflix .
           docker tag netflix kola0031/netflix:latest
           docker push kola0031/netflix:latest
 
   trivy_image_scan:
     runs-on: self-hosted
     needs: docker_build
-
     steps:
       - name: Run Trivy Image Scan
-        run: trivy image kola0031/netflix:latest > trivyimage.txt
+        run: trivy image kola0031/netflix:latest > reports/trivyimage.txt
 
   deploy:
     runs-on: self-hosted
     needs: trivy_image_scan
-
     steps:
       - name: Deploy Container
         run: docker run -d -p 8081:80 kola0031/netflix:latest
