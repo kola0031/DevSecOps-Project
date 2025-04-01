@@ -47,7 +47,7 @@ jobs:
             -Dsonar.projectKey=Netflix \
             -Dsonar.projectName=Netflix \
             -Dsonar.sources=. \
-            -Dsonar.host.url=http://3.15.29.26:9000/ \
+            -Dsonar.host.url=http:localhost:9000/ \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
   security_scan:
