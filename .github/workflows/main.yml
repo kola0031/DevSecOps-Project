@@ -31,7 +31,7 @@ jobs:
         run: npm install
 
   sonar:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build
 
     steps:
@@ -67,7 +67,7 @@ jobs:
         run: trivy fs . > trivyfs.txt
 
   docker_build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: security_scan
 
     steps:
@@ -84,7 +84,7 @@ jobs:
           docker push kola0031/netflix:latest
 
   trivy_image_scan:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: docker_build
 
     steps:
@@ -92,7 +92,7 @@ jobs:
         run: trivy image kola0031/netflix:latest > trivyimage.txt
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: trivy_image_scan
 
     steps:
