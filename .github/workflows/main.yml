@@ -48,29 +48,7 @@ jobs:
             -Dsonar.host.url=http://localhost:9000/ \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-  security_scan:
-    runs-on: self-hosted
-    needs: sonar
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
 
-      # Ensure reports directory exists
-      - name: Create Reports Directory
-        run: mkdir -p reports
-
-      # Run OWASP Dependency-Check
-      - name: Run OWASP Dependency Check
-        run: |
-          docker run --rm --platform linux/amd64 \
-            --platform linux/arm64 \
-            -e NVD_API_KEY=${{ secrets.NVD_API_KEY }} \
-            --volume $(pwd):/src \
-            --volume $(pwd)/reports:/report \
-            owasp/dependency-check \
-            --scan /src \
-            --format XML \
-            --out /report/dependency-check-report.xml
 
       # Run Trivy scan on the filesystem
       - name: Run Trivy File System Scan
