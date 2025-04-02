@@ -56,7 +56,6 @@ jobs:
 
   docker_build:
     runs-on: self-hosted
-    needs: security_scan
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
