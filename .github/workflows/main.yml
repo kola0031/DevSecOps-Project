@@ -62,7 +62,7 @@ jobs:
       # Run OWASP Dependency-Check
       - name: Run OWASP Dependency Check
         run: |
-          docker run --rm \
+          docker run --rm --platform linux/amd64 \
             --platform linux/arm64 \
             -e NVD_API_KEY=${{ secrets.NVD_API_KEY }} \
             --volume $(pwd):/src \
