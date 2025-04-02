@@ -55,12 +55,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Ensure reports directory exists
+      - name: Create Reports Directory
+        run: mkdir -p reports
+
       # Run OWASP Dependency-Check
       - name: Run OWASP Dependency Check
         run: |
-          mkdir -p reports
           docker run --rm \
-            --platform linux/arm64
+            --platform linux/arm64 \
             -e NVD_API_KEY=${{ secrets.NVD_API_KEY }} \
             --volume $(pwd):/src \
             --volume $(pwd)/reports:/report \
@@ -87,18 +90,4 @@ jobs:
         run: |
           docker build --build-arg TMDB_V3_API_KEY=${{ secrets.TMDB_V3_API_KEY }} -t netflix .
           docker tag netflix kola0031/netflix:latest
-          docker push kola0031/netflix:latest
-
-  trivy_image_scan:
-    runs-on: self-hosted
-    needs: docker_build
-    steps:
-      - name: Run Trivy Image Scan
-        run: trivy image kola0031/netflix:latest > reports/trivyimage.txt
-
-  deploy:
-    runs-on: self-hosted
-    needs: trivy_image_scan
-    steps:
-      - name: Deploy Container
-        run: docker run -d -p 8081:80 kola0031/netflix:latest
+          docker
